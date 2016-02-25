@@ -1,0 +1,62 @@
+#include <QTextStream>
+#include <QFile>
+#include <QString>
+#include <QUrl>
+#include <QMap>
+#include <QList>
+
+int main() {
+ QTextStream(stdout) << "DNS Zone-file parser 2.0" << endl;
+ QString filename = "/home/renze/orphanfinder/testdata/com.zone-latest";
+ QFile file(filename);
+ if(!file.open(QIODevice::ReadOnly)) {
+  QTextStream(stdout) << "Could not open zone-file" << endl;
+  return 1;
+ }
+ QTextStream data(&file);
+ qint32 inside = 0;
+ qint32 outside = 0;
+ qint32 c = 0;
+
+ QMap<QString, QList<QString>> records;
+ records.clear();
+
+ while (!data.atEnd()) {
+   QString line = data.readLine();
+   if ((!(line.at(0)==';'))&&(!line.isEmpty())) {
+     QStringList record = line.split(" ");
+     if ((record.count()>2)&&(record.at(1).compare("NS")==0)) {
+       //When we reach this we know it's an NS record.
+       QString domain = record.at(0);
+       QString server = record.at(2);
+       if (server.endsWith(".")) { //Inside pointing records end without a dot
+         server.chop(1); //Remove the dot at the end
+         if (!records.contains(server)) {
+           QList domains;
+           domains.insert(domain);
+           records.insert(server, domains); //Add to list
+           /* QUrl server_url;
+           server_url.setHost(server);
+           QString tld = server_url.topLevelDomain();
+           QTextStream(stdout) << "TLD:" << tld << " SERVER: " << server << endl; 
+           return 0; */
+         } else {
+           
+         }
+         outside++;
+       } else { inside++; }
+     }
+   }
+   c++;
+   if (c>1000000) {
+     c = 0;
+     QTextStream(stdout) << "[" << QString::number(inside) << "/" << QString::number(outside) << "]" << endl;
+   }
+ }
+ file.close();
+
+ //Done!
+ QTextStream(stdout) << "Inside: " << QString::number(inside) << endl;
+ QTextStream(stdout) << "Outside: " << QString::number(outside) << endl;
+ return 0;
+}

@@ -1,9 +1,21 @@
 #!/bin/bash
+td=$(date +%F)
+echo "$td" > output/td
+cd /home/renze/data/zone-files
+tdz=$(date +%d-%m-%y)
+mv com.zone.gz."$tdz"_13:00 com.zone."$tdz"_13:00.gz
+mv net.zone.gz."$tdz"_13:00 net.zone."$tdz"_13:00.gz
+gunzip com.zone."$tdz"_13:00.gz
+gunzip net.zone."$tdz"_13:00.gz
+cd /home/renze/orphanfinder
+
 echo "Wiping unbound cache..."
 sudo unbound-control reload
 
 echo "Cleaning..."
-rm output/*
+rm output/* -R
+
+echo "$tdz" > output/tdz
 
 echo "Finding records that point outside..."
 cd find_outside_com
@@ -43,10 +55,26 @@ cd count_in_which_tlds_orphans_are
 ./run.sh &
 cd ..
 
-cd find_domains_for_orphans
+#cd find_domains_for_orphans
+#./run.sh &
+#cd ..
+
+cd check_ip_addresses_against_blacklist
+./run.sh &
+cd ..
+
+cd get_all_websites
+./run.sh &
+cd ..
+
+cd geolocation
 ./run.sh &
 cd ..
 
 wait
+
+echo "Saving results..."
+mkdir /home/renze/results/"$td"
+cp -v output/* /home/renze/results/"$td" -R
 
 echo "--- SCRIPT COMPLETED ---"

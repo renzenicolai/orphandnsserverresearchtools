@@ -1,4 +1,7 @@
 #!/bin/bash
+rm net.zone-latest
+today=$(cat ../output/tdz)
+ln -s /home/renze/data/zone-files/net.zone."$today"_13:00 net.zone-latest
 rm temp/* 2>&1 1>/dev/null
 date
 ./find_outside > ../output/find_outside_net_statistics.txt

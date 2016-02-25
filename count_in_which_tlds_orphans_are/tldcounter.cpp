@@ -10,7 +10,7 @@ int main() {
  if(!file.open(QIODevice::ReadOnly)) { QTextStream(stdout) << "Could not open orphans.txt" << endl; return 1; }
  QTextStream data(&file);
 
- QString ofilename="../output/orphans_per_tld.txt";
+ QString ofilename="../output/orphans_per_tld.csv";
  QFile ofile(ofilename);
  if ( !ofile.open(QIODevice::ReadWrite) ) { QTextStream(stdout) << "Could not open "<< ofilename << endl; return 1; }
 

@@ -1,7 +1,9 @@
 <?php
-$input = file_get_contents("../output/ip4_list.txt");
+if ((!isset($argv[1]))||(!isset($argv[2]))) die('usage: pscan4.php <input> <output>');
+$input = file_get_contents($argv[1]);
 $input = explode(PHP_EOL, $input);
-$csv_all = 'IP,DNS,HTTP,HTTPS,FTP,SMTP'.PHP_EOL;
+//$csv_all = 'IP,DNS,HTTP,HTTPS,FTP,SMTP'.PHP_EOL;
+$csv_all = '';
 $count_total = 0;
 $count_dns = 0;
 $count_http = 0;
@@ -52,5 +54,5 @@ $results .= 'Smtp: '.$count_smtp.PHP_EOL;
 
 echo $results;
 
-file_put_contents('../output/portscan_v4.csv', $csv_all);
-file_put_contents('../output/portscan_v4_stats.txt', $results);
+file_put_contents($argv[2], $csv_all);
+//file_put_contents('../output/portscan_v4_stats.txt', $results);

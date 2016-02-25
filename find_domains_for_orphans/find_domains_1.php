@@ -14,6 +14,8 @@
         }
       }
     }
+    file_put_contents('temp_NET/'.$server, $records);
+    $records = '';
     $records_com = shell_exec("cat com.zone-latest | grep '".$server."'");
     if (!empty($records_com)) {
       $r = explode(PHP_EOL, $records_com);
@@ -24,5 +26,5 @@
         }
       }
     }
-    file_put_contents('temp/'.$server, $records);
+    file_put_contents('temp_COM/'.$server, $records);
   }

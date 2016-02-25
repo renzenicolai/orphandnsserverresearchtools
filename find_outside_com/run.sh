@@ -1,4 +1,7 @@
 #!/bin/bash
+rm com.zone-latest
+today=$(date +%d-%m-%y)
+ln -s /home/renze/data/zone-files/com.zone."$today"_13:00 com.zone-latest
 rm temp/* 2>&1 1>/dev/null
 date
 ./find_outside > ../output/find_outside_com_statistics.txt
